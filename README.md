@@ -8,11 +8,16 @@ follow these steps:
 
 Method to Run the Network Sniffer Script in CMD
 
-1.Ensure Your Environment is Set Up:
-2.Make sure you have Python installed on your system.
+1.
+Ensure Your Environment is Set Up:
 
-3.Install the necessary packages (Flask and Scapy) if you haven't already:
-4.
+2.
+Make sure you have Python installed on your system.
+
+
+Install the necessary packages (Flask and Scapy) if you haven't already:
+
+3.
 
 $ bash
 
@@ -21,9 +26,11 @@ $ pip install  scapy
 
 5.Run the Script (sniffer.py)  in CMD:
 
-6.Open the Command Prompt (cmd).
+6.
+Open the Command Prompt (cmd).
 
 Navigate to the directory where your sniffer.py file is located using the cd command:
+
 7.
 
 $ bash
@@ -31,7 +38,6 @@ $ bash
 $ cd path\to\your\directory
 
 8.
-
 Replace path\to\your\directory with the actual path.
 Run the script using Python:
 bash
