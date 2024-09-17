@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Sniffer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        #packetInfo {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+            max-height: 400px; /* Set a maximum height */
+            overflow-y: auto; /* Enable vertical scrolling */
+            display: block; /* Make it block to allow scrolling */
+        }
+        #packetInfo table {
+            width: 100%;
+        }
+        #packetInfo th, #packetInfo td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        #packetInfo th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .loading {
+            display: none;
+            font-size: 18px;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <h1>Network Sniffer</h1>
+    <form id="captureForm">
+        <input type="submit" value="Start Capturing">
+    </form>
+
+    <div class="loading" id="loading">Capturing packets... Please wait.</div>
+
+    <div id="packetInfo">
+        <table>
+            <thead>
+                <tr>
+                    <th>Source IP</th>
+                    <th>Destination IP</th>
+                    <th>Protocol</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('captureForm').onsubmit = function(event) {
+            event.preventDefault(); // Prevent form submission
+            document.getElementById('loading').style.display = 'block'; // Show loading message
+            
+            fetch('/capture', { method: 'POST' })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data); // Log the response from the server
+                    startFetchingPackets(); // Start fetching packets after capturing starts
+                });
+        };
+
+        function startFetchingPackets() {
+            setInterval(() => {
+                fetch('/packets')
+                    .then(response => response.json())
+                    .then(data => {
+                        const tbody = document.querySelector('#packetInfo tbody');
+                        tbody.innerHTML = ''; // Clear previous entries
+                        data.forEach(packet => {
+                            const row = document.createElement('tr');
+                            const sourceCell = document.createElement('td');
+                            const destinationCell = document.createElement('td');
+                            const protocolCell = document.createElement('td');
+
+                            sourceCell.textContent = packet.source;
+                            destinationCell.textContent = packet.destination;
+                            protocolCell.textContent = packet.protocol;
+
+                            row.appendChild(sourceCell);
+                            row.appendChild(destinationCell);
+                            row.appendChild(protocolCell);
+                            tbody.appendChild(row);
+                        });
+                        document.getElementById('loading').style.display = 'none'; // Hide loading message
+                        
+                        // Auto-scroll to the bottom of the table
+                        const packetDiv = document.getElementById('packetInfo');
+                        packetDiv.scrollTop = packetDiv.scrollHeight; // Scroll to the bottom
+                    });
+            }, 2000); // Fetch every 2 seconds
+        }
+    </script>
+</body>
+</html>
